@@ -1,0 +1,45 @@
+# PlayOS ROG Ally — package set (Arch / CachyOS)
+#
+# Install with:
+#   sudo pacman -S --needed - < packages.x86_64
+#
+# Grouped by purpose. Trim as needed; this is the reference set for bringing up
+# the PlayOS compositor + shell on the ROG Ally (AMD Radeon 780M).
+
+# --- Base / toolchain ---
+base-devel
+cmake
+ninja
+git
+pkgconf
+
+# --- Kernel / firmware / GPU (AMD 780M) ---
+linux
+linux-firmware
+mesa
+vulkan-radeon
+libva-mesa-driver
+
+# --- Wayland / compositor (wlroots) stack ---
+wlroots
+wayland
+wayland-protocols
+libinput
+libdrm
+seatd
+libxkbcommon
+xorg-xwayland
+
+# --- Audio (async; not on the critical boot path) ---
+pipewire
+wireplumber
+
+# --- Connectivity / power ---
+networkmanager
+bluez
+bluez-utils
+
+# --- Diagnostics (optional but handy during bring-up) ---
+mesa-utils
+vulkan-tools
+evtest

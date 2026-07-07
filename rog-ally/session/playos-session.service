@@ -1,0 +1,15 @@
+[Unit]
+Description=PlayOS Session (compositor + shell)
+Documentation=https://github.com/PlayOS-Foundation/playos-spec
+After=seatd.service
+
+[Service]
+Type=simple
+# Adjust the path if your workspace lives elsewhere.
+ExecStart=%h/source/repos/playos/playos-reference-devices/rog-ally/session/playos-session.sh
+Restart=on-failure
+RestartSec=2
+# The compositor needs seat/DRM access provided via seatd + the 'seat' group.
+
+[Install]
+WantedBy=default.target
