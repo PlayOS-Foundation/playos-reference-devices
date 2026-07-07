@@ -1,0 +1,7 @@
+# Force LF for scripts and text so they work on Linux (the ROG Ally target).
+* text=auto eol=lf
+*.sh    text eol=lf
+*.toml  text eol=lf
+*.md    text eol=lf
+*.service text eol=lf
+packages.x86_64 text eol=lf
