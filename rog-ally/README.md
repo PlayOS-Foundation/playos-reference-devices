@@ -1,90 +1,74 @@
-# ROG Ally — PlayOS Reference Bring-Up Kit
+# ROG Ally — Alpine PlayOS Bring-Up Kit
 
-Turnkey setup for bringing up the PlayOS compositor + shell on the **ASUS ROG
-Ally** (AMD Radeon 780M), the primary reference runtime device.
+The ASUS ROG Ally is the primary PlayOS Runtime Device and the first hardware target for the Alpine reference OS.
 
-This kit implements the spec chapter
-[`12-device-model-and-porting/12-rog-ally-reference.md`](https://github.com/PlayOS-Foundation/playos-spec/blob/main/book/src/12-device-model-and-porting/12-rog-ally-reference.md)
-and the compositor bring-up guide in `playos-runtime/compositor/BRINGUP.md`.
+The authoritative path is to boot an image from [`playos-refdistro`](https://github.com/PlayOS-Foundation/playos-refdistro). This kit also supports a faster development loop on Alpine installed directly on the device.
 
 ## Prerequisites
 
-- Arch Linux or CachyOS installed on the ROG Ally.
-- The PlayOS repos checked out as siblings, e.g.:
-
-  ```text
-  ~/source/repos/playos/
-    ├── playos-platform-api/
-    ├── playos-runtime/
-    ├── playos-shell/
-    ├── playos-samples/
-    └── playos-reference-devices/   (this repo)
-  ```
+- Alpine Linux 3.24 x86_64 on the Ally for development-host bring-up, or a PlayOS Alpine image.
+- Community repository enabled.
+- The PlayOS repositories checked out as siblings.
+- A TTY outside another graphical session for direct DRM/KMS testing.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `packages.x86_64` | Reference `pacman` package set |
-| `setup.sh` | Install packages, enable seatd, add user to seat/video/input groups |
-| `build.sh` | Build runtime (+compositor), shell, and sample in Release |
-| `session/playos-session.sh` | Launch the compositor with the shell as its client |
-| `session/playos-session.service` | Optional systemd **user** unit to autostart the session |
-| `device-profile.toml` | Draft PlayOS device profile for the Ally |
+| `packages.x86_64` | Alpine runtime and build dependencies |
+| `packages.arch-legacy.x86_64` | Historical Arch/CachyOS inventory |
+| `setup.sh` | Install APKs, enable seatd, and configure groups |
+| `build.sh` | Build compositor, shell, and samples against musl |
+| `session/playos-session.sh` | Direct development launcher |
+| `session/playos-session.service` | Legacy systemd example; not used by Alpine |
+| `device-profile.toml` | ROG Ally device profile |
 
 ## Quick start
 
 ```sh
 cd playos-reference-devices/rog-ally
-
-# 1) One-time host setup (installs packages, seatd, groups). Re-login after.
 ./setup.sh
-
-# 2) Build the components.
+# Log out/in after group changes.
 ./build.sh
-
-# 3) From a TTY (Ctrl+Alt+F3), launch the session.
+# From a TTY:
 ./session/playos-session.sh
 ```
 
-## Optional: autostart as a user service
+## Verify the graphics path
 
 ```sh
-mkdir -p ~/.config/systemd/user
-cp session/playos-session.service ~/.config/systemd/user/
-# Edit ExecStart in the copy if your workspace path differs.
-systemctl --user daemon-reload
-systemctl --user enable --now playos-session.service
+readlink -f /sys/class/drm/card0/device/driver
+cat /sys/kernel/debug/dri/0/name 2>/dev/null || true
 ```
 
-## Verify GPU acceleration
+Compositor logs must show the amdgpu DRM node and hardware EGL/GLES rendering. Pixman is acceptable only for virtual bring-up.
 
-```sh
-glxinfo | grep renderer     # expect: AMD Radeon 780M  (NOT llvmpipe)
-```
-
-If it shows `llvmpipe`, the GPU driver stack is misconfigured (software
-rendering) — check `mesa` / `vulkan-radeon` and that you are on a TTY the
-compositor can take.
-
-## Stage 1 definition of done
+## Alpine vertical slice
 
 ```text
-[ ] setup.sh completes; seatd active; user in seat/video/input groups
-[ ] build.sh builds compositor + shell + sample
-[ ] compositor takes the display from a TTY
-[ ] Raylib shell appears (as a Wayland client)
-[ ] gamepad navigates the shell (evdev backend)
-[ ] Armoury button -> Home (return-to-shell)
-[ ] selecting "Hello PlayOS" launches it and returns to the shell
-[ ] glxinfo shows AMD Radeon 780M (not llvmpipe)
+[ ] Alpine image boots through UEFI
+[ ] amdgpu firmware loads
+[ ] seatd is active and grants non-root access
+[ ] runtime, compositor, shell, and samples build against musl
+[ ] compositor owns DRM/KMS from a TTY
+[ ] shell renders as a Wayland client
+[ ] built-in controller navigates
+[ ] Armoury/Home returns to the shell
+[ ] touch maps to the internal panel
+[ ] 60 Hz and 120 Hz modes are detected
+[ ] a sample launches and returns
+[ ] first-frame timing is recorded
 ```
 
-## Notes / current limitations
+## Extended gates
 
-- The compositor is a **Stage 1 skeleton** targeting wlroots 0.19. If your
-  installed wlroots differs, adapt the `VERSION-SENSITIVE` calls (see the
-  compositor `BRINGUP.md`).
-- Controller input reaches the shell via the Platform API's **evdev** backend,
-  so full Wayland input routing is not required for Stage 1.
-- Touch, brightness/TDP/fan, suspend/resume, and audio are later stages.
+- controller and dock hotplug;
+- audio;
+- Wi-Fi and Bluetooth;
+- brightness and battery;
+- suspend/resume;
+- external display;
+- persistent data;
+- recovery and image update.
+
+The old Arch/CachyOS path is retained only for comparison during migration.
