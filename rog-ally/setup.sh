@@ -1,29 +1,45 @@
 #!/usr/bin/env bash
-# setup.sh — one-time host preparation for the PlayOS ROG Ally reference.
-# Installs packages, enables seatd, and adds the current user to the required
-# groups. Re-login (or reboot) afterwards for group changes to take effect.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "==> Installing packages"
-sudo pacman -S --needed - < "$SCRIPT_DIR/packages.x86_64"
+if ! command -v apk >/dev/null 2>&1; then
+    echo "error: this setup script targets Alpine Linux" >&2
+    echo "The former Arch package list is packages.arch-legacy.x86_64." >&2
+    exit 1
+fi
 
-echo "==> Enabling seatd"
-sudo systemctl enable --now seatd
+mapfile -t packages < <(sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d' "$SCRIPT_DIR/packages.x86_64")
 
-echo "==> Adding $USER to seat, video, input groups"
-sudo usermod -aG seat,video,input "$USER"
+echo "==> Installing Alpine packages"
+sudo apk add "${packages[@]}"
 
-echo "==> Enabling NetworkManager"
-sudo systemctl enable --now NetworkManager || true
+echo "==> Enabling device and seat services"
+sudo rc-update add udev sysinit
+sudo rc-update add udev-trigger sysinit
+sudo rc-update add dbus boot
+sudo rc-update add seatd default
+sudo rc-service dbus start || true
+sudo rc-service seatd start
+
+echo "==> Adding $USER to seat, video, input, and audio groups"
+for group in seat video input audio; do
+    if getent group "$group" >/dev/null 2>&1; then
+        sudo addgroup "$USER" "$group" || true
+    fi
+done
+
+echo "==> Enabling background connectivity for development-host bring-up"
+sudo rc-update add networkmanager default || true
+sudo rc-service networkmanager start || true
 
 cat <<'EOF'
 
-Done. Log out and back in (or reboot) so group membership applies.
+Alpine ROG Ally host preparation is complete.
 
-Next:
-  1. Build the components:   ./build.sh
-  2. From a TTY (Ctrl+Alt+F3), run:  ./session/playos-session.sh
-  3. Verify GPU:             glxinfo | grep renderer   # expect AMD Radeon 780M
+Log out and back in so group membership applies. Then:
+  ./build.sh
+  ./session/playos-session.sh   # from a TTY
+
+The bootable reference image must still be validated from playos-refdistro.
 EOF
