@@ -16,11 +16,9 @@ The authoritative path is to boot an image from [`playos-refdistro`](https://git
 | File | Purpose |
 |---|---|
 | `packages.x86_64` | Alpine runtime and build dependencies |
-| `packages.arch-legacy.x86_64` | Historical Arch/CachyOS inventory |
 | `setup.sh` | Install APKs, enable seatd, and configure groups |
 | `build.sh` | Build compositor, shell, and samples against musl |
 | `session/playos-session.sh` | Direct development launcher |
-| `session/playos-session.service` | Legacy systemd example; not used by Alpine |
 | `device-profile.toml` | ROG Ally device profile |
 
 ## Quick start
@@ -71,4 +69,4 @@ Compositor logs must show the amdgpu DRM node and hardware EGL/GLES rendering. P
 - persistent data;
 - recovery and image update.
 
-The old Arch/CachyOS path is retained only for comparison during migration.
+Retired distro-specific implementations remain available in Git history. This active kit supports the Alpine reference path only.

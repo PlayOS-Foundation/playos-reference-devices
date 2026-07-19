@@ -12,7 +12,7 @@ This repository contains operational hardware bring-up material. The device mode
 4. **One device folder per device.**
 5. **Capabilities, not assumptions.** Declare touch, battery, brightness, vendor buttons, refresh modes, and other features.
 6. **Reproducible evidence.** Record kernel, Mesa, firmware, wlroots, image digest, and results.
-7. **Preserve legacy evidence.** Arch/CachyOS files may remain temporarily only when clearly labelled.
+7. **Keep the kit current.** Retired distro-specific files remain recoverable from Git history; the active tree contains only supported device integration.
 8. **No secrets or personal paths.**
 
 ## Device checklist
