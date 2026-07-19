@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if ! command -v apk >/dev/null 2>&1; then
     echo "error: this setup script targets Alpine Linux" >&2
-    echo "The former Arch package list is packages.arch-legacy.x86_64." >&2
+    echo "Run it on the Alpine reference image or an Alpine development host." >&2
     exit 1
 fi
 
