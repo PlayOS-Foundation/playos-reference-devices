@@ -1,45 +1,44 @@
-# PlayOS ROG Ally — package set (Arch / CachyOS)
-#
-# Install with:
-#   sudo pacman -S --needed - < packages.x86_64
-#
-# Grouped by purpose. Trim as needed; this is the reference set for bringing up
-# the PlayOS compositor + shell on the ROG Ally (AMD Radeon 780M).
+# PlayOS ROG Ally package set — Alpine Linux 3.24 / x86_64
+# Install with: sudo apk add $(grep -v '^#' packages.x86_64)
 
-# --- Base / toolchain ---
-base-devel
-cmake
-ninja
-git
-pkgconf
-
-# --- Kernel / firmware / GPU (AMD 780M) ---
-linux
-linux-firmware
-mesa
-vulkan-radeon
-libva-mesa-driver
-
-# --- Wayland / compositor (wlroots) stack ---
-wlroots
-wayland
-wayland-protocols
-libinput
-libdrm
-seatd
-libxkbcommon
-xorg-xwayland
-
-# --- Audio (async; not on the critical boot path) ---
-pipewire
-wireplumber
-
-# --- Connectivity / power ---
-networkmanager
+alpine-sdk
+bash
 bluez
-bluez-utils
-
-# --- Diagnostics (optional but handy during bring-up) ---
-mesa-utils
-vulkan-tools
+bluez-openrc
+cmake
+dbus
+dbus-openrc
+eudev
+eudev-openrc
 evtest
+git
+iwd
+libdrm
+libdrm-dev
+libinput
+libinput-dev
+libxkbcommon
+libxkbcommon-dev
+linux-firmware-amdgpu
+mesa-dev
+mesa-dri-gallium
+mesa-egl
+mesa-gbm
+mesa-gles
+mesa-vulkan-ati
+ninja
+networkmanager
+networkmanager-openrc
+pipewire
+pkgconf
+seatd
+seatd-dev
+seatd-openrc
+vulkan-tools
+wayland
+wayland-dev
+wayland-protocols
+wireplumber
+wireplumber-openrc
+wlroots0.19
+wlroots0.19-dev
