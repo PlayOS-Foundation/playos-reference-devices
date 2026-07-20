@@ -1,0 +1,26 @@
+# PlayOS device profile — ASUS Ultrabook (NVIDIA dGPU).
+# Reference laptop profile for NVIDIA Optimus/hybrid graphics devices.
+
+[device]
+id = "asus-ultrabook"
+name = "ASUS Ultrabook (NVIDIA)"
+targetType = "runtime-device"
+
+[input]
+keyboard = "keyboard0"
+touchpad = "touchpad0"
+built_in_controls = "none"          # No built-in gamepad
+
+[display]
+default_width = 1920
+default_height = 1080
+refresh_rate = 60
+
+[capabilities]
+"input.basic" = true
+"input.keyboard" = true
+"input.touchpad" = true
+"display.info" = true
+"display.brightness" = true
+"power.battery" = true
+"system.overlay" = true

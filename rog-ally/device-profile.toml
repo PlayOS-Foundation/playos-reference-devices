@@ -1,8 +1,6 @@
 # PlayOS device profile — ASUS ROG Ally (reference runtime device).
-# Mirrors the sketch in playos-spec:
-#   book/src/12-device-model-and-porting/12-rog-ally-reference.md
-# This is a draft; the device-profile schema is defined in
-#   playos-spec/schemas/device-profile.schema.json (RFC-0006).
+# Mirrors the spec: 12-device-model-and-porting/12-rog-ally-reference.md
+# Schema: playos-spec/schemas/device-profile.schema.json (RFC-0006).
 
 [device]
 id = "rog-ally"
@@ -10,10 +8,19 @@ name = "ASUS ROG Ally"
 targetType = "runtime-device"
 
 [input]
-home_button = "asus_armoury"
-quick_settings_button = "asus_command_center"
-built_in_controls = "gamepad0"
+home_button = "BTN_MODE"           # Xbox guide button (event* separate device)
+quick_settings_button = "BTN_START" # Command Center button
+built_in_controls = "gamepad0"      # /dev/input/event10, xpad driver (045e:028e)
 touchscreen = "touch0"
+dpad_up = "BTN_DPAD_UP"
+dpad_down = "BTN_DPAD_DOWN"
+dpad_left = "BTN_DPAD_LEFT"
+dpad_right = "BTN_DPAD_RIGHT"
+button_a = "BTN_SOUTH"             # 304
+button_b = "BTN_EAST"              # 305
+left_stick_x = "ABS_X"             # 0
+left_stick_y = "ABS_Y"             # 1
+right_trigger = "ABS_Z"            # 2
 
 [display]
 default_width = 1920

@@ -7,32 +7,48 @@ This kit implements the spec chapter
 [`12-device-model-and-porting/12-rog-ally-reference.md`](https://github.com/PlayOS-Foundation/playos-spec/blob/main/book/src/12-device-model-and-porting/12-rog-ally-reference.md)
 and the compositor bring-up guide in `playos-runtime/compositor/BRINGUP.md`.
 
-## Prerequisites
+## Two bring-up paths
 
-- Arch Linux or CachyOS installed on the ROG Ally.
-- The PlayOS repos checked out as siblings, e.g.:
+| Path | OS | Use case |
+|---|---|---|
+| **Alpine netboot** (recommended) | Alpine Linux, PXE boot | Turnkey ISO build → PXE boot. No OS install needed. |
+| **Arch native** | Arch Linux / CachyOS | Dev iteration on an installed OS. |
 
-  ```text
-  ~/source/repos/playos/
-    ├── playos-platform-api/
-    ├── playos-runtime/
-    ├── playos-shell/
-    ├── playos-samples/
-    └── playos-reference-devices/   (this repo)
-  ```
+## Alpine netboot (recommended)
+
+Builds a minimal Alpine ISO with the compositor, shell, samples, and GPU
+drivers baked in. Boots directly into the PlayOS shell via PXE.
+
+```sh
+cd playos-refdistro
+
+# One-time host setup (Ubuntu 24.04+)
+bash scripts/setup-ubuntu-build-host.sh
+
+# Build the ISO (~15 min first run, ~2 min subsequent with ccache)
+bash scripts/build-iso-ubuntu.sh
+```
+
+The ISO is written to `out/alpine-playos-v3.24-x86_64.iso`. Deploy to a PXE
+server or write to USB. Booting loads the apkovl overlay which auto-starts
+the compositor + shell at the `playos-visual` runlevel.
+
+See [`alpine/README.md`](alpine/README.md) for details on the netboot
+configuration and SSH debug access.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `packages.x86_64` | Reference `pacman` package set |
-| `setup.sh` | Install packages, enable seatd, add user to seat/video/input groups |
-| `build.sh` | Build runtime (+compositor), shell, and sample in Release |
+| `packages.x86_64` | Reference `pacman` package set (Arch native path) |
+| `setup.sh` | Install packages, enable seatd, add user to seat/video/input groups (Arch native) |
+| `build.sh` | Build runtime (+compositor), shell, and sample in Release (Arch native) |
 | `session/playos-session.sh` | Launch the compositor with the shell as its client |
 | `session/playos-session.service` | Optional systemd **user** unit to autostart the session |
 | `device-profile.toml` | Draft PlayOS device profile for the Ally |
+| `alpine/` | Alpine netboot build documentation and configs |
 
-## Quick start
+## Quick start (Arch native)
 
 ```sh
 cd playos-reference-devices/rog-ally
@@ -70,15 +86,28 @@ compositor can take.
 ## Stage 1 definition of done
 
 ```text
-[ ] setup.sh completes; seatd active; user in seat/video/input groups
-[ ] build.sh builds compositor + shell + sample
-[ ] compositor takes the display from a TTY
-[ ] Raylib shell appears (as a Wayland client)
-[ ] gamepad navigates the shell (evdev backend)
+[x] setup.sh completes; seatd active; user in seat/video/input groups
+[x] build.sh builds compositor + shell + sample
+[x] compositor takes the display from a TTY
+[x] Raylib shell appears (as a Wayland client)
+[x] gamepad navigates the shell (evdev + raylib backend)
+[x] D-Pad and analog stick work (15% deadzone)
 [ ] Armoury button -> Home (return-to-shell)
-[ ] selecting "Hello PlayOS" launches it and returns to the shell
-[ ] glxinfo shows AMD Radeon 780M (not llvmpipe)
+[x] selecting "Hello PlayOS" launches it and returns to the shell
+[x] GPU: AMD Radeon 780M (not llvmpipe)
+[x] Samples pre-loaded on boot (hello-playos, space-invaders)
 ```
+
+## Known input mappings (Xbox 360 pad, xpad driver)
+
+| Control | evdev code | Notes |
+|---|---|---|
+| A button | `BTN_SOUTH` (304) | Select/confirm |
+| B button | `BTN_EAST` (305) | Back |
+| D-Pad | `BTN_DPAD_UP/DOWN/LEFT/RIGHT` | Navigation |
+| Left stick | `ABS_X`, `ABS_Y` | Movement |
+| Right trigger | `ABS_Z` | Shoot (Space Invaders) |
+| Xbox button | `/dev/input/event*` (separate device) | Mapped to Home |
 
 ## Notes / current limitations
 

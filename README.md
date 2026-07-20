@@ -12,7 +12,9 @@ material for real hardware.
 
 | Device | Kind | Status | Kit |
 |---|---|---|---|
-| ASUS ROG Ally | Runtime device (x86_64, AMD 780M) | Bring-up (Stage 1) | [`rog-ally/`](rog-ally/README.md) |
+| ASUS ROG Ally | Runtime device (x86_64, AMD 780M) | Stage 1 ✅ | [`rog-ally/`](rog-ally/README.md) |
+| ASUS Ultrabook | Runtime device (x86_64, NVIDIA dGPU) | Stage 1 bring-up | [`asus-ultrabook/`](asus-ultrabook/README.md) |
+| Generic Desktop | Desktop / VM (x86_64, any GPU) | Planned | [`generic-desktop/`](generic-desktop/README.md) |
 
 Each device folder provides the package set, setup/build scripts, a session
 launcher, an optional systemd user unit, a draft device profile, and a
@@ -22,13 +24,20 @@ Stage 1 definition of done.
 
 ```text
 rog-ally/
+  alpine/                    Alpine netboot documentation
   packages.x86_64            pacman package set
   setup.sh                   host setup (packages, seatd, groups)
   build.sh                   build runtime+compositor, shell, sample
-  device-profile.toml        draft PlayOS device profile
+  device-profile.toml        PlayOS device profile (ROG Ally)
   session/
     playos-session.sh        launch compositor + shell
     playos-session.service   optional systemd user unit
+  README.md                  device bring-up guide + checklist
+asus-ultrabook/
+  device-profile.toml        PlayOS device profile (NVIDIA laptop)
+  README.md                  device bring-up guide + checklist
+generic-desktop/
+  device-profile.toml        PlayOS device profile (keyboard+mouse)
   README.md                  device bring-up guide + checklist
 ```
 

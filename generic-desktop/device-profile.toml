@@ -1,0 +1,23 @@
+# PlayOS device profile — Generic Desktop / VM.
+# Keyboard+mouse baseline. No controller, no battery, no touch.
+
+[device]
+id = "generic-desktop"
+name = "Generic Desktop / VM"
+targetType = "runtime-device"
+
+[input]
+keyboard = "keyboard0"
+mouse = "mouse0"
+built_in_controls = "none"
+
+[display]
+default_width = 1920
+default_height = 1080
+refresh_rate = 60
+
+[capabilities]
+"input.basic" = true
+"input.keyboard" = true
+"input.mouse" = true
+"display.info" = true
