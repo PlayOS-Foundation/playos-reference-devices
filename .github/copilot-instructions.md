@@ -1,3 +1,4 @@
+> **⚠️ FIRST:** Read [`gen-context.md`](../gen-context.md) before anything else to understand the full PlayOS platform context.
 # Copilot instructions — playos-reference-devices
 
 Operational bring-up material for PlayOS hardware and SDK targets (package
