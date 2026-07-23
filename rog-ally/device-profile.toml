@@ -8,7 +8,7 @@ name = "ASUS ROG Ally"
 targetType = "runtime-device"
 
 [input]
-home_button = "BTN_MODE"           # Xbox guide button (event* separate device)
+home_button = "xbox_guide"           # Xbox guide button (event* separate device)
 quick_settings_button = "BTN_START" # Command Center button
 built_in_controls = "gamepad0"      # /dev/input/event10, xpad driver (045e:028e)
 touchscreen = "touch0"
