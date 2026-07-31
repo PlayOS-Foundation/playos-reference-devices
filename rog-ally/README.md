@@ -33,6 +33,16 @@ cd playos-reference-devices/rog-ally
 ./session/playos-session.sh
 ```
 
+## USB Gadget Serial Console (REMOVED)
+
+The `playos-usb-gadget` service and `g_serial` kernel module support has been
+removed from the build. The ROG Ally's USB-C port is host-only — no
+device-mode/UDC — so `g_serial` never produced `ttyGS0` and the host never
+enumerated anything. It was dead code on this hardware.
+
+For debugging, use SSH over WiFi (`root@<ip>`, key at `~/.ssh/id_ed25519`)
+or attach a USB keyboard + external display via dock.
+
 ## Verify the graphics path
 
 ```sh
